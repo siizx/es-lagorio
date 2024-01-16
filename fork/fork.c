@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/wait.h>
+
 
 int main(){
 	
-	int wstatus;
 	pid_t pid = fork();
 	
 	if(pid < 0) {
@@ -16,12 +17,10 @@ int main(){
 	if(pid == 0){
 		pid_t thispid = getpid();
 		printf("Sono il figlio, con pid #%d\n", thispid);
-	}
-	
-	if(pid > 0){
+	}else{
 		pid_t thispid = getpid();
 		printf("Sono il padre con pid #%d\n", thispid);
-		wait(&wstatus);
+		wait(NULL);
 	}
 
 

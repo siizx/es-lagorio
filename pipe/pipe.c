@@ -5,30 +5,36 @@
 #include <string.h>
 #include <sys/types.h>
 
-char  buf[] = "yolo polo";
-char buf2[256];
+unsigned int s = 256;
+char* buf;
+char *buf2;
 
 int main() {
 	
+	buf = (char*)malloc(s*sizeof(char));
+	buf2 = (char*)malloc(s*sizeof(char));
 	int fd[2];
-	
+	fgets(buf, s , stdin);
 	pipe(fd);
-	// qui sopra, abbiamo creato fd[0] per la lettura e fd[1] per la scrittura.
+
 	
 	pid_t pid = fork();
 	
 	if(pid != 0){
 		close(fd[0]);
-		write(fd[1], buf, sizeof(buf));
+		write(fd[1], buf, strlen(buf)+1);
+		close(fd[1]);
 		wait(NULL);
 		
 	}else{
 		close(fd[1]);
-		read(fd[0], buf2, sizeof(buf));
-		printf("%s\n", buf2);
+		read(fd[0], buf2, s);
+		printf("%s", buf2);
+		close(fd[0]);
 	}	
 	
-
+	free(buf);
+	free(buf2);
 
 	return 0;
 }
